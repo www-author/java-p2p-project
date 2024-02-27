@@ -11,7 +11,9 @@ public class PeerToPeerApplication {
                 System.out.println(INPUT_PEER_INFORMATION.getMessage());
                 String[] peerInformation = reader.readLine().split("\\s+");
                 int indexOfPort = peerInformation.length - 1;
-                ServerThread serverThread = new ServerThread(peerInformation[indexOfPort]);
+                ServerThread serverThread = ServerThread.from(
+                        Integer.parseInt(peerInformation[indexOfPort])
+                );
                 serverThread.start(); // server socket open
                 Peer.getInstance().updateListenToPeers(
                         reader,

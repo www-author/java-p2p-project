@@ -9,10 +9,24 @@ public class ServerThreadManager extends Thread {
     private ServerThread serverThread;
     private Socket socket;
     private PrintWriter printWriter;
-    public ServerThreadManager(Socket socket, ServerThread serverThread) {
+
+    private static ServerThreadManager instance;
+
+    private ServerThreadManager(Socket socket, ServerThread serverThread) {
         this.serverThread = serverThread;
         this.socket = socket;
     }
+
+    public static ServerThreadManager of(
+            Socket socket,
+            ServerThread serverThread
+    ) {
+         if (instance == null) {
+             return new ServerThreadManager(socket, serverThread);
+         }
+         return instance;
+    }
+
 
     public void run() {
         try {

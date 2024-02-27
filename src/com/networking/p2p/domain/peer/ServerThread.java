@@ -8,14 +8,27 @@ import java.util.Set;
 public class ServerThread extends Thread {
     private ServerSocket serverSocket;
     private Set<ServerThreadManager> serverThreads = new HashSet<ServerThreadManager>();
-    public ServerThread(String portNumber) throws IOException {
-        serverSocket = new ServerSocket(Integer.valueOf(portNumber));
+    private static ServerThread instance;
+
+    private ServerThread(int port) throws IOException {
+        serverSocket = new ServerSocket(port);
     }
+
+    public static ServerThread from(int port) throws IOException {
+        if (instance == null) {
+            return new ServerThread(port);
+        }
+        return instance;
+    }
+
 
     public void run() {
         try {
             while (true) {
-                ServerThreadManager serverThreadManager = new ServerThreadManager(serverSocket.accept(), this);
+                ServerThreadManager serverThreadManager = ServerThreadManager.of(
+                        serverSocket.accept(),
+                        this
+                );
                 serverThreads.add(serverThreadManager);
                 serverThreadManager.start();
             }
