@@ -50,7 +50,7 @@ public class Peer {
 
     public void communicate(BufferedReader bufferedReader, String username, ServerThread serverThread) throws Exception {
         try {
-            System.out.println("> you can now communicate (e to exit, c to change)");
+            System.out.println(CAN_SEND_AND_RECEIVE_MESSAGES.getMessage());
             boolean flag = true;
             while (flag) {
                 String message = bufferedReader.readLine();
