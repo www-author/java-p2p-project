@@ -2,15 +2,16 @@ package com.networking.p2p.domain.peer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerThread extends Thread {
-    private ServerSocket serverSocket;
-    private Set<ServerThreadManager> serverThreads = new HashSet<ServerThreadManager>();
+    private final ServerSocket serverSocket;
+    private final Set<ServerThreadManager> serverThreads;
     private static ServerThread instance;
 
     private ServerThread(int port) throws IOException {
+        serverThreads = ConcurrentHashMap.newKeySet();
         serverSocket = new ServerSocket(port);
     }
 
@@ -20,7 +21,6 @@ public class ServerThread extends Thread {
         }
         return instance;
     }
-
 
     public void run() {
         try {
@@ -32,23 +32,19 @@ public class ServerThread extends Thread {
                 serverThreads.add(serverThreadManager);
                 serverThreadManager.start();
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    void sendMessage(String message) {
-        try {
-            for (ServerThreadManager t : serverThreads) {
-                t.getPrintWriter().println(message);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void sendMessage(String message) throws IOException {
+        for (ServerThreadManager t : serverThreads) {
+            t.getPrintWriter().println(message);
         }
     }
 
     public Set<ServerThreadManager> getServerThreads() {
-        return  serverThreads;
+        return serverThreads;
     }
 }
 

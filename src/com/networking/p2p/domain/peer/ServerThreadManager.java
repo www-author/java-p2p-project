@@ -27,12 +27,18 @@ public class ServerThreadManager extends Thread {
          return instance;
     }
 
-
     public void run() {
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-            this.printWriter = new PrintWriter(socket.getOutputStream(), true);
-            while (true) serverThread.sendMessage(reader.readLine());
+        try(BufferedReader reader = new BufferedReader(
+                new InputStreamReader(this.socket.getInputStream())
+        )) {
+            this.printWriter = new PrintWriter(
+                    socket.getOutputStream(),
+                    true
+            );
+
+            while (true) {
+                serverThread.sendMessage(reader.readLine());
+            }
         } catch (Exception e) {
             serverThread.getServerThreads().remove(this);
         }

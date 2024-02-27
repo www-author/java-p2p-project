@@ -10,16 +10,17 @@ public class PeerToPeerApplication {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
                 System.out.println(INPUT_PEER_INFORMATION.getMessage());
                 String[] peerInformation = reader.readLine().split("\\s+");
+                //TODO (refactor) : Peer 정보 입력 후 포트 번호에 대한 유효성 검사와 예외 처리
                 int indexOfPort = peerInformation.length - 1;
                 ServerThread serverThread = ServerThread.from(
                         Integer.parseInt(peerInformation[indexOfPort])
                 );
                 serverThread.start(); // server socket open
                 Peer.getInstance().updateListenToPeers(
-                        reader,
-                        peerInformation[indexOfPort],
-                        serverThread
-                );
+                                reader,
+                                peerInformation[indexOfPort],
+                                serverThread
+                        );
             } catch (RuntimeException e) {
                 e.printStackTrace();
             } catch (Exception e) {
